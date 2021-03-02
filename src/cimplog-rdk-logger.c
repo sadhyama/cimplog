@@ -22,6 +22,17 @@
 
 #include "cimplog.h"
 
+#define LOG_FILE "/tmp/cimplog.txt"
+#define DBUG_PRINT(fmt ...)     {\
+                                        FILE     *fp        = NULL;\
+                                        fp = fopen ( LOG_FILE, "a+");\
+                                        if (fp)\
+                                        {\
+                                            fprintf(fp,fmt);\
+                                            fclose(fp);\
+                                        }\
+                               }\
+
 #define DEBUG_INI_NAME		"/etc/debug.ini"
 #define MAX_BUF_SIZE 1024
 
@@ -40,15 +51,19 @@ void __cimplog(const char *module, int level, const char *msg, ...)
         {
             fprintf(stderr, "\nERROR: RDK Logger not integrated for this module !!!\n");
             fprintf(stderr, " Provide cimplog method \"const char *rdk_logger_module_fetch(void)\" to get log prints !!\n");
-	          exit(0); // Not using RDKLogger is an Error. Terminate!
+		DBUG_PRINT("CIMPLOG ERROR: RDK Logger not integrated. Provide cimplog method rdk_logger_module_fetch to get log prints !!\n");
+		DBUG_PRINT("CIMPLOG Not Exiting..\n");
+	          //exit(0); // Not using RDKLogger is an Error. Terminate!
         }
         init_done = 1;
     }
 
+    //DBUG_PRINT("CIMPLOG : rdk_logger_module is %s init_done %d!\n", rdk_logger_module, init_done);
     if( NULL == rdk_logger_module )
     {
         //if RDK logger module is not defined, simple return - dont print.
         // used when calling module is not interested in log prints
+	DBUG_PRINT("CIMPLOG ERROR: rdk_logger_module is NULL !!\n");
         return;
     }
 
@@ -82,6 +97,7 @@ void __cimplog(const char *module, int level, const char *msg, ...)
 // The below 'weak' linkage should be replaced with strong definition in the module integrating to cimplog
 const char *rdk_logger_module_fetch(void)
 {
+    DBUG_PRINT("CIMPLOG Inside weak rdk_logger_module_fetch !!\n");
     return NULL;
 }
 
@@ -99,6 +115,7 @@ void __cimplog_rdk_generic(const char *rdk_logger_module, const char *module, in
     {
         //if RDK logger module is not defined, simple return - dont print.
         // used when calling module is not interested in log prints
+	DBUG_PRINT("CIMPLOG Inside __cimplog_rdk_generic !!\n");
         return;
     }
 
