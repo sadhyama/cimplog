@@ -47,15 +47,18 @@ void __cimplog(const char *module, int level, const char *msg, ...)
     {
         RDK_LOGGER_INIT();
         rdk_logger_module = rdk_logger_module_fetch();
+
         if( NULL == rdk_logger_module )
         {
             fprintf(stderr, "\nERROR: RDK Logger not integrated for this module !!!\n");
             fprintf(stderr, " Provide cimplog method \"const char *rdk_logger_module_fetch(void)\" to get log prints !!\n");
 		DBUG_PRINT("CIMPLOG ERROR: RDK Logger not integrated. Provide cimplog method rdk_logger_module_fetch to get log prints !!\n");
-		DBUG_PRINT("CIMPLOG Not Exiting..\n");
-	          //exit(0); // Not using RDKLogger is an Error. Terminate!
+		DBUG_PRINT("CIMPLOG Exiting..\n");
+	          exit(0); // Not using RDKLogger is an Error. Terminate!
         }
+	DBUG_PRINT("CIMPLOG : rdk_logger_module value is %s init_done %d\n", rdk_logger_module, init_done);
         init_done = 1;
+	DBUG_PRINT("CIMPLOG : rdk_logger_module value is %s init_done %d\n", rdk_logger_module, init_done);
     }
 
     //DBUG_PRINT("CIMPLOG : rdk_logger_module is %s init_done %d!\n", rdk_logger_module, init_done);
